@@ -1,3 +1,6 @@
+from collections import namedtuple, deque
+from math import ceil
+
 import numpy as np
 
 
@@ -26,3 +29,83 @@ def reconstruct_knapsack(matrix, items):
             pass
 
     return index_list
+
+
+def linear_relaxation(items, cap, update=False, max_value=0):
+    solved = False
+    n_items = len(items)
+
+    for n, i in enumerate(items):
+        if (cap - i.weight) >= 0:
+
+            cap -= i.weight
+            max_value += i.value
+
+            if update:
+                items[n] = items[n]._replace(relaxation = 1)
+
+            if n == n_items-1:
+                solved = True
+
+            if cap == 0:
+                solved = True
+                break
+
+        else:
+            ratio = round((cap / i.weight),2)
+            max_value += ceil(i.value*ratio)
+
+            if update:
+                items[n] = items[n]._replace(relaxation = ratio)
+
+            break
+
+    return solved, items, max_value
+
+
+def dfs_branch_bound(items, capacity):
+
+    State = namedtuple("State", ['position', 'value', 'free_capacity', 'estimate', 'items'])
+
+    solved, items, init_estimate = linear_relaxation(items, capacity, True)
+
+    init_state = State(0, 0, capacity, init_estimate, ())
+    solution = State(0, 0, capacity, init_estimate, ())
+
+    stack = deque([init_state])
+    n_items = len(items)
+
+    while stack:
+
+        current_state = stack.pop()
+        pos = current_state.position
+        val = current_state.value
+        cap = current_state.free_capacity
+        estimate = current_state.estimate
+        item_tuple = current_state.items
+
+        #if next item is not choosen:
+        if pos >= n_items:
+            continue
+
+        _, _, estimate = linear_relaxation(items[pos:], cap, False, val)
+
+        if solution.value > estimate:
+            continue
+
+        new_state = State(pos+1, val, cap, estimate, item_tuple)
+        stack.append(new_state)
+
+        cap -= items[pos].weight
+
+        if cap >= 0:
+
+            val += items[pos].value
+            item_tuple += (items[pos].index,)
+            new_state = State(pos+1, val, cap, estimate, item_tuple)
+            stack.append(new_state)
+
+            if val > solution.value:
+                solution = new_state
+
+    return solution

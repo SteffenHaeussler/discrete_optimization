@@ -7,6 +7,7 @@ import time
 import knapsack as ks
 
 Item = namedtuple("Item", ['index', 'value', 'weight'])
+relax_Item = namedtuple("Item", ['index', 'value', 'weight', 'v_w_ratio', 'relaxation'])
 
 def solve_it(input_data):
     # Modify this code to run your optimization algorithm
@@ -19,17 +20,28 @@ def solve_it(input_data):
     capacity = int(firstLine[1])
 
     items = []
+    relax_items = []
 
     for i in range(1, item_count+1):
         line = lines[i]
         parts = line.split()
         items.append(Item(i-1, int(parts[0]), int(parts[1])))
+        relax_items.append(relax_Item(i-1, int(parts[0]), int(parts[1]), round(int(parts[0])/int(parts[1]), 2), 0))
 
     start_time = time.time()
 
-    matrix = ks.knapsack_dp(items, capacity)
-    taken = ks.reconstruct_knapsack(matrix, items)
-    value = matrix[-1][-1]
+    # matrix = ks.knapsack_dp(items, capacity)
+    # taken = ks.reconstruct_knapsack(matrix, items)
+    # value = matrix[-1][-1]
+
+    relax_items = sorted(relax_items, key=lambda x: x.v_w_ratio)[::-1]
+    best = ks.dfs_branch_bound(relax_items, capacity)
+
+    taken = [0]*len(relax_items)
+    value = best.value
+
+    for i in best.items:
+        taken[relax_items[i].index] = 1
 
     end_time = time.time()
 
