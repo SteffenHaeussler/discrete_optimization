@@ -1,5 +1,4 @@
 from collections import namedtuple, deque
-from math import ceil
 
 import numpy as np
 
@@ -17,7 +16,7 @@ def knapsack_dp(items, capacity):
     return matrix
 
 
-def reconstruct_knapsack(matrix, items):
+def reconstruct_knapsack(matrix, items, capacity):
     remain_capacity = capacity
     index_list = [0] * len(items)
     for i in range(0, len(items))[::-1]:
@@ -52,8 +51,8 @@ def linear_relaxation(items, cap, update=False, max_value=0):
                 break
 
         else:
-            ratio = round((cap / i.weight),2)
-            max_value += ceil(i.value*ratio)
+            ratio = cap / i.weight
+            max_value += i.value*ratio
 
             if update:
                 items[n] = items[n]._replace(relaxation = ratio)
@@ -63,11 +62,11 @@ def linear_relaxation(items, cap, update=False, max_value=0):
     return solved, items, max_value
 
 
-def dfs_branch_bound(items, capacity):
+def bfs_branch_bound(items, capacity):
 
     State = namedtuple("State", ['position', 'value', 'free_capacity', 'estimate', 'items'])
 
-    solved, items, init_estimate = linear_relaxation(items, capacity, True)
+    _, items, init_estimate = linear_relaxation(items, capacity, True)
 
     init_state = State(0, 0, capacity, init_estimate, ())
     solution = State(0, 0, capacity, init_estimate, ())
@@ -77,7 +76,7 @@ def dfs_branch_bound(items, capacity):
 
     while stack:
 
-        current_state = stack.pop()
+        current_state = stack.popleft()
         pos = current_state.position
         val = current_state.value
         cap = current_state.free_capacity
@@ -105,7 +104,7 @@ def dfs_branch_bound(items, capacity):
             new_state = State(pos+1, val, cap, estimate, item_tuple)
             stack.append(new_state)
 
-            if val > solution.value:
+            if val >= solution.value:
                 solution = new_state
 
     return solution

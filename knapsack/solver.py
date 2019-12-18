@@ -31,20 +31,19 @@ def solve_it(input_data):
     start_time = time.time()
 
     # matrix = ks.knapsack_dp(items, capacity)
-    # taken = ks.reconstruct_knapsack(matrix, items)
+    # taken = ks.reconstruct_knapsack(matrix, items, capacity)
     # value = matrix[-1][-1]
 
     relax_items = sorted(relax_items, key=lambda x: x.v_w_ratio)[::-1]
     best = ks.dfs_branch_bound(relax_items, capacity)
 
-    taken = [0]*len(relax_items)
+    taken = [0]*len(items)
     value = best.value
-
     for i in best.items:
-        taken[relax_items[i].index] = 1
+        taken[i] = 1
 
     end_time = time.time()
-
+    print(value)
     print("This took %.2f seconds" % (end_time - start_time))
 
     # prepare the solution in the specified output format

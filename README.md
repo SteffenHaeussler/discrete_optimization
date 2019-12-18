@@ -10,9 +10,11 @@ For every problem, there are 6 subproblems, which had to been solved.
 
 Points: 60/60
 
-### Branch and Bound
+### Branch and Bound with BFS
 
-tbd
+Points: 50/60
+
+computational time: < 10 seconds
 
 ## Problem 2: Graph Coloring
 
