@@ -35,7 +35,7 @@ def solve_it(input_data):
     # value = matrix[-1][-1]
 
     relax_items = sorted(relax_items, key=lambda x: x.v_w_ratio)[::-1]
-    best = ks.dfs_branch_bound(relax_items, capacity)
+    best = ks.bfs_branch_bound(relax_items, capacity)
 
     taken = [0]*len(items)
     value = best.value
