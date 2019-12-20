@@ -1,7 +1,7 @@
 from collections import namedtuple, deque
 
 import numpy as np
-
+from ortools.algorithms import pywrapknapsack_solver
 
 def knapsack_dp(items, capacity):
     matrix = np.zeros([len(items)+1,capacity+1])
@@ -87,7 +87,7 @@ def bfs_branch_bound(items, capacity):
         if pos >= n_items:
             continue
 
-        _, _, estimate = linear_relaxation(items[pos:], cap, False, val)
+        _, _, estimate = linear_relaxation(items[pos-1:], cap, False, val)
 
         if solution.value > estimate:
             continue
@@ -108,3 +108,27 @@ def bfs_branch_bound(items, capacity):
                 solution = new_state
 
     return solution
+
+
+def or_solver(items, capacity):
+
+    solver = pywrapknapsack_solver.KnapsackSolver(
+        pywrapknapsack_solver.KnapsackSolver.
+        KNAPSACK_MULTIDIMENSION_BRANCH_AND_BOUND_SOLVER, 'Coursera')
+
+    values = [i.value for i in items]
+    weights = [[i.weight for i in items]]
+
+    solver.Init(values, weights, [capacity])
+    computed_value = solver.Solve()
+
+    taken = []
+    value = 0
+    for i in range(len(items)):
+        if solver.BestSolutionContains(i):
+            taken.append(1)
+            value += values[i]
+        else:
+            taken.append(0)
+
+    return value, taken

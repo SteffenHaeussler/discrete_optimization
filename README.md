@@ -16,6 +16,13 @@ Points: 50/60
 
 computational time: < 10 seconds
 
+
+### OR-Tools
+
+Points: 60/60
+
+computational time: < 10 seconds
+
 ## Problem 2: Graph Coloring
 
 tbd

@@ -30,17 +30,23 @@ def solve_it(input_data):
 
     start_time = time.time()
 
+    # dynamic programming solution
     # matrix = ks.knapsack_dp(items, capacity)
     # taken = ks.reconstruct_knapsack(matrix, items, capacity)
     # value = matrix[-1][-1]
 
-    relax_items = sorted(relax_items, key=lambda x: x.v_w_ratio)[::-1]
-    best = ks.bfs_branch_bound(relax_items, capacity)
+    # hand-made branch and bound
+    # TODO: buggy
+    # relax_items = sorted(relax_items, key=lambda x: x.v_w_ratio)[::-1]
+    # best = ks.bfs_branch_bound(relax_items, capacity)
 
-    taken = [0]*len(items)
-    value = best.value
-    for i in best.items:
-        taken[i] = 1
+    # taken = [0]*len(items)
+    # value = best.value
+    # for i in best.items:
+    #     taken[i] = 1
+
+    # google or-tools solver
+    value, taken = ks.or_solver(items, capacity)
 
     end_time = time.time()
     print(value)
