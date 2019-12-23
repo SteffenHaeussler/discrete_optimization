@@ -25,4 +25,8 @@ computational time: < 10 seconds
 
 ## Problem 2: Graph Coloring
 
-tbd
+### mixture between or-tools and greedy approach
+
+Points: 51/60
+
+
