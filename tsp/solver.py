@@ -29,7 +29,7 @@ def solve_it(input_data):
     print(nodeCount)
     start_time = time.time()
 
-    # dist_matrix = tsp.calculate_distance_matrix(nodeCount, points)
+    dist_matrix = tsp.calculate_distance_matrix(nodeCount, points)
     # solution = tsp.greedy_solution(nodeCount, points, dist_matrix)
     # solution = tsp.find_shortest_path(solution, dist_matrix)
 

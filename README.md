@@ -32,7 +32,7 @@ Points: 51/60
 
 ## Problem 3: Graph Coloring
 
-### greedy approach with 2-opt and sequential iteration
+### greedy approach with 2-opt and sequential iteration (hacky)
 
 Points: 42/60
 
