@@ -30,3 +30,12 @@ computational time: < 10 seconds
 Points: 51/60
 
 
+## Problem 3: Graph Coloring
+
+### greedy approach with 2-opt and sequential iteration
+
+Points: 42/60
+
+### or-tools with tabu-search
+
+Points: 45/60
