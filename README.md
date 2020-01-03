@@ -30,7 +30,7 @@ computational time: < 10 seconds
 Points: 51/60
 
 
-## Problem 3: Graph Coloring
+## Problem 3: TSP
 
 ### greedy approach with 2-opt and sequential iteration (hacky)
 
@@ -39,3 +39,16 @@ Points: 42/60
 ### or-tools with tabu-search
 
 Points: 45/60
+
+
+## Problem 4: Capicated facility location
+
+### MIP with OR-Tools
+
+Points: 44/80
+
+but no possilbe solution for 3 tasks
+
+### MIP with PySCIPOp
+
+Points: 64/80
