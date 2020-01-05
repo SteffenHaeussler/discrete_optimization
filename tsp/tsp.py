@@ -2,9 +2,12 @@ import math
 
 import numpy as np
 import numpy.ma as ma
+import networkx as nx
 
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
+
+from pyscipopt import Model, quicksum, multidict
 
 
 def calculate_distance_matrix(n_nodes, points):
@@ -191,3 +194,66 @@ def get_or_solution(data, time_limit):
         solution, _ = get_solution(manager, routing, assignment)
 
     return solution
+
+
+def solve_tsp(V,c):
+
+    def addcut(cut_edges):
+        G = nx.Graph()
+        G.add_edges_from(cut_edges)
+        Components = list(nx.connected_components(G))
+        if len(Components) == 1:
+            return False
+        model.freeTransform()
+        for S in Components:
+            model.addCons(quicksum(x[i,j] for i in S for j in S if j>i) <= len(S)-1)
+        return True
+
+
+    model = Model("tsp")
+    model.hideOutput()
+    x = {}
+    for i in V:
+        for j in V:
+            if j > i:
+                x[i,j] = model.addVar(ub=1, name="x(%s,%s)"%(i,j))
+    for i in V:
+        model.addCons(quicksum(x[j,i] for j in V if j < i) + \
+                    quicksum(x[i,j] for j in V if j > i) == 2, "Degree(%s)"%i)
+    model.setObjective(quicksum(c[i,j]*x[i,j] for i in V for j in V if j > i), "minimize")
+    EPS = 1.e-6
+    isMIP = False
+
+    while True:
+        model.optimize()
+        edges = []
+        for (i,j) in x:
+            if model.getVal(x[i,j]) > EPS:
+                edges.append( (i,j) )
+        if addcut(edges) == False:
+            if isMIP:     # integer variables, components connected: solution found
+                break
+            model.freeTransform()
+            for (i,j) in x:     # all components connected, switch to integer model
+                model.chgVarType(x[i,j], "B")
+                isMIP = True
+
+    solution = get_mip_solution(edges)
+
+    return solution
+
+
+def get_mip_solution(a):
+
+    start = a.pop(0)
+    next_node = start[1]
+    sol = [start[0], start[1]]
+
+    while a:
+
+        next_edge = [n for n,i in enumerate(a) if next_node in i]
+        next_edge = a.pop(next_edge[0])
+        next_node = [n for n in next_edge if n != next_node][0]
+        sol.append(next_node)
+
+    return sol[:-1]

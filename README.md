@@ -40,6 +40,11 @@ Points: 42/60
 
 Points: 45/60
 
+### mip with or-tools with tabu-search
+
+Points: 54/60
+
+MIP without timebound only first 4 problems solveable in reasonable amount of time
 
 ## Problem 4: Capicated facility location
 
