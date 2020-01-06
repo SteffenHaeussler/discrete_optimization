@@ -196,8 +196,8 @@ def get_or_solution(data, time_limit):
     return solution
 
 
-def solve_tsp(V,c):
-
+def solve_tsp(nodes,cost):
+    # from https://scipbook.readthedocs.io/en/latest/routing.html#traveling-salesman-problem
     def addcut(cut_edges):
         G = nx.Graph()
         G.add_edges_from(cut_edges)
@@ -213,14 +213,14 @@ def solve_tsp(V,c):
     model = Model("tsp")
     model.hideOutput()
     x = {}
-    for i in V:
-        for j in V:
+    for i in nodes:
+        for j in nodes:
             if j > i:
                 x[i,j] = model.addVar(ub=1, name="x(%s,%s)"%(i,j))
-    for i in V:
-        model.addCons(quicksum(x[j,i] for j in V if j < i) + \
-                    quicksum(x[i,j] for j in V if j > i) == 2, "Degree(%s)"%i)
-    model.setObjective(quicksum(c[i,j]*x[i,j] for i in V for j in V if j > i), "minimize")
+    for i in nodes:
+        model.addCons(quicksum(x[j,i] for j in nodes if j < i) + \
+                    quicksum(x[i,j] for j in nodes if j > i) == 2, "Degree(%s)"%i)
+    model.setObjective(quicksum(cost[i,j]*x[i,j] for i in nodes for j in nodes if j > i), "minimize")
     EPS = 1.e-6
     isMIP = False
 
@@ -243,17 +243,17 @@ def solve_tsp(V,c):
     return solution
 
 
-def get_mip_solution(a):
+def get_mip_solution(edges):
 
-    start = a.pop(0)
+    start = edges.pop(0)
     next_node = start[1]
-    sol = [start[0], start[1]]
+    solution = [start[0], start[1]]
 
-    while a:
+    while edges:
 
-        next_edge = [n for n,i in enumerate(a) if next_node in i]
-        next_edge = a.pop(next_edge[0])
-        next_node = [n for n in next_edge if n != next_node][0]
-        sol.append(next_node)
+        next_edge = [n for n,edge in enumerate(edges) if next_node in edge]
+        next_edge = edges.pop(next_edge[0])
+        next_node = [node for node in next_edge if node != next_node][0]
+        solution.append(next_node)
 
-    return sol[:-1]
+    return solution[:-1]

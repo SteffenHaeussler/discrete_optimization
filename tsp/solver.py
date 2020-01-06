@@ -38,14 +38,15 @@ def solve_it(input_data):
 
     if nodeCount < 1000:
 
-        V = list(range(nodeCount))
+        nodes = list(range(nodeCount))
 
         cost = {}
         for i in range(dist_matrix.shape[0]):
             for j in range(dist_matrix.shape[1]):
                 cost[(i,j)] = dist_matrix[i][j]
 
-        solution = tsp.solve_tsp(V, cost)
+        solution = tsp.solve_tsp(nodes, cost)
+        # solution = tsp.get_or_solution(data, time_limit)
 
     else:
         time_limit = min(nodeCount*3 ,1800)
