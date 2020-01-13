@@ -61,6 +61,6 @@ Points: 64/80
 
 ## Problem 5: Capicated vehicle routing
 
-### or-tools with guided local searcg
+### or-tools with guided local search
 
 Points: 54/60
