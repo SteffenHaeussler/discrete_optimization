@@ -1,8 +1,8 @@
 # discrete_optimization
 
-This is a collection of my solutions for the [Coursera online course](https://www.coursera.org/learn/discrete-optimization/home/welcome).
+This is a short collection of my solutions for the [Coursera online course](https://www.coursera.org/learn/discrete-optimization/home/welcome). By far, they are not perfect and with some code review and refactoring, much higher scores could be achieved, but this course is quite hard. I'm happy, that I accomplished it. :)
 
-For every problem, there are 6 subproblems, which had to been solved.
+Each problem is divided in 6 subproblems, which determine the score. 
 
 ## Problem 1: Knapsack
 
